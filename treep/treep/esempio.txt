@@ -1,0 +1,13 @@
+﻿
+depthFirstSearch ( tree ) { 
+  if (tree == null) return null; 
+
+  print ( tree# > 0) ; 
+
+  tree# > 1=1; 
+
+  for (child = 0; tree > child != null; child += 1) {
+
+    if ((tree@child )# > 1==0) { depthFirstSearch ( tree@child ) ; } 
+  }
+}

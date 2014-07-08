@@ -36,9 +36,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="test.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="Tokenizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="esempio.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
