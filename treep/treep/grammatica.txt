@@ -1,0 +1,79 @@
+non so dove mettere gli operatori @ e #. vanno bene nella produzione E1?
+
+
+P -> S 'EOF'
+
+S -> COM S1 | epsilon			//lista comandi
+
+S1 -> ';' S
+
+C ->  ID X |				//comandi
+      'for' '(' C ';' G ';' C ')' B | 	
+      'if' '(' G ')' B EIF |
+      'return' E 
+
+X -> '=' E Y | 			//
+     '(' AR ')' B |
+     '[' TREE_LIST ']'
+
+
+/* La prima produzione definisce sia l'assegnamento di una expr a una var, sia l'assegnamento del
+                                 valore di ritorno di una funzione chiamata a var */
+                                // La seconda è per la definizione di una funzione e del suo corpo
+
+B -> '{' S '}' 			//blocchi interni
+
+AR -> A | epsilon			//argomenti		****non è ridondante?*****
+
+A -> ID A1 					/// elimino AR e metto A dai comandi
+
+A1 -> ',' A | epsilon
+
+Y -> (AR) | epsilon
+
+EIF -> 'else' '{' S '}' | epsilon
+
+
+G -> E G1				//guardia
+
+G1 ->   '<'  E |
+	'>'  E |
+	'='  E |
+	'>=' E |		no
+	'<=' E |		no
+	'!=' E |
+
+E -> T E1
+
+E1 -> '+' T E1 | 
+      '-' T E1 |
+      '@' T E1 |
+      '>' T E1 |	
+      epsilon
+
+T -> F T1
+
+T1 -> '*' F T1 |
+      '/' F T1 |
+      epsilon
+
+F -> '(' E ')' |
+        ID     |			ID Z
+        NUM    |			Z -> '[' N ']' | epsilon
+	DOUBLE |
+	BOOL   |
+	STRING |
+	TP     |
+	TR	
+
+TR -> E '[' N ']'
+
+N -> E N1 | epsilon
+
+N1 -> ',' N | epsilon
+
+TP -> '<' E TP1 '>'
+
+TP1 -> ',' TP | epsilon
+	
+
