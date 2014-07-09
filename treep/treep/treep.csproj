@@ -35,9 +35,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Atomic.cs" />
+    <Compile Include="E.cs" />
+    <Compile Include="E1.cs" />
+    <Compile Include="F.cs" />
+    <Compile Include="N.cs" />
+    <Compile Include="N1.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="T.cs" />
+    <Compile Include="T1.cs" />
     <Compile Include="test.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Tokenizer.cs" />
+    <Compile Include="TP.cs" />
+    <Compile Include="TP1.cs" />
+    <Compile Include="TR.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

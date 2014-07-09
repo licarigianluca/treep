@@ -12,20 +12,30 @@ class Test
     {
         Console.WriteLine("Start parsing...");
         string text = System.IO.File.ReadAllText(@"C:\Users\gianlu\Source\Repos\treep\treep\treep\esempio.txt");
-        //string text = "true false = !=  + += height empty type branchingfactor 123456789 123456.789456 18.1";
+        //string text = "ciao \"ciao   .!= pippo\" true false = !=  + +=  @ # height empty type branchingfactor 123456789 123456.789456 18.1";
+        //string text = "<3, \"six\",9>";
         showToken(text);
+        parseExpr(text);
     }
 
+    private static void parseExpr(String text)
+    {
+
+        Parser p = new Parser();
+        //P program = (P)p.parse(text);
+        F factor= new F("pippo");
+        Console.WriteLine(factor.stringValue);
+    }
     private static void showToken(String text)
     {
         Tokenizer t = new Tokenizer(text);
         Token lookahead = t.nextToken();
         while (lookahead.Type != (int)type.EOF)
         {
-            Console.WriteLine(lookahead.Value + "\t" + converter(lookahead.Type));
+            Console.WriteLine(lookahead.Value + "\t\t\t\t" + converter(lookahead.Type));
             lookahead = t.nextToken();
         }
-        Console.WriteLine(lookahead.Value + "\t" + converter(lookahead.Type));
+        Console.WriteLine(lookahead.Value + "\t\t\t\t" + converter(lookahead.Type));
     }
 
     public static String converter(int type)
@@ -35,12 +45,12 @@ class Test
         {
             case 0: return "PLUS";
             case 1: return "TIMES";
-            case 2: return "STRING";
+            case 2: return "ID";
             case 3: return "INVALID_TOKEN";
             case 4: return "CLOSE_PAR";
             case 5: return "OPEN_PAR";
             case 6: return "EOF";
-            case 7: return "INT";
+            case 7: return "INTEGER";
             case 8: return "OBELUS";
             case 9: return "MINUS";
             case 10: return "INCR";
@@ -68,6 +78,7 @@ class Test
             case 32: return "PRINT";
             case 33: return "DOUBLE";
             case 34: return "NULL";
+            case 35: return "STRING";
             default: return null;
         }
 

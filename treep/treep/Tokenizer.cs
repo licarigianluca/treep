@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 public enum type
 {
-    PLUS, TIMES, STRING, INVALID_TOKEN, CLOSE_PAR, OPEN_PAR, EOF, INT,
+    PLUS, TIMES, ID, INVALID_TOKEN, CLOSE_PAR, OPEN_PAR, EOF, INTEGER,
     OBELUS, MINUS, INCR, SEMICOLON, OPEN_CURLY, CLOSE_CURLY,
     IF, ELSE, FOR, GT, LT, EQUAL, DISEQUAL, RETURN, COMMA, HASHTAG, AT,
-    OPEN_SQUARE, CLOSE_SQUARE, BOOL, HEIGHT, EMPTY, TYPE, BRANCH, PRINT, DOUBLE, NULL
+    OPEN_SQUARE, CLOSE_SQUARE, BOOL, HEIGHT, EMPTY, TYPE, BRANCH, PRINT, DOUBLE, NULL, STRING
 };
 
 public class Tokenizer
@@ -82,7 +82,7 @@ public class Tokenizer
             }
             else
             {
-                ignoreBlanks = false;
+                //ignoreBlanks = false;
                 t = new Token(s[idx++].ToString(), (int)type.PLUS);
             }
         }
@@ -149,6 +149,19 @@ public class Tokenizer
                 t = new Token(s[idx++].ToString(), (int)type.INVALID_TOKEN);
             }
         }
+        else if (s[idx] == '"')
+        {
+
+            lexeme = s[idx++].ToString();
+            while (idx < s.Length && (isChar(s[idx]) || isDigit(s[idx]) || isBlank(s[idx])) && s[idx] != '"')
+            {
+                lexeme += s[idx++];
+            }
+            lexeme += s[idx++];
+            t = new Token(lexeme.ToString(), (int)type.STRING);
+
+
+        }
         else if (isDigit(s[idx]))
         {
             int dot = 0;
@@ -169,7 +182,7 @@ public class Tokenizer
             }
             if (dot == 0)
             {
-                t = new Token(lexeme.ToString(), (int)type.INT);
+                t = new Token(lexeme.ToString(), (int)type.INTEGER);
             }
             else if (dot == 1)
             {
@@ -196,12 +209,13 @@ public class Tokenizer
             }
             else
             {
-                t = new Token(lexeme.ToString(), (int)type.STRING);
+                t = new Token(lexeme.ToString(), (int)type.ID);
             }
         }
         else
         {
-            if ((s[idx] == ' ' || s[idx] == '\n') && ignoreBlanks)
+            //if ((s[idx] == ' ' || s[idx] == '\n') && ignoreBlanks)
+            if (isBlank(s[idx]) && ignoreBlanks)
             {
                 idx++;
                 t = nextToken();
@@ -226,4 +240,8 @@ public class Tokenizer
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
+    private bool isBlank(char c)
+    {
+        return (c != ' ') || (c != '\r') || (c != '\n');
+    }
 }
