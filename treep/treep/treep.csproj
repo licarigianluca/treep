@@ -35,10 +35,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A.cs" />
+    <Compile Include="A1.cs" />
+    <Compile Include="AR.cs" />
     <Compile Include="Atomic.cs" />
+    <Compile Include="B.cs" />
+    <Compile Include="C.cs" />
     <Compile Include="E.cs" />
     <Compile Include="E1.cs" />
+    <Compile Include="EIF.cs" />
+    <Compile Include="ELIST.cs" />
     <Compile Include="F.cs" />
+    <Compile Include="G.cs" />
+    <Compile Include="G1.cs" />
+    <Compile Include="HTAG.cs" />
+    <Compile Include="P.cs" />
+    <Compile Include="S.cs" />
+    <Compile Include="S1.cs" />
+    <Compile Include="TAIL.cs" />
+    <Compile Include="TYPE.cs" />
     <Compile Include="N.cs" />
     <Compile Include="N1.cs" />
     <Compile Include="Parser.cs" />
@@ -50,6 +65,9 @@
     <Compile Include="TP.cs" />
     <Compile Include="TP1.cs" />
     <Compile Include="TR.cs" />
+    <Compile Include="X.cs" />
+    <Compile Include="Y.cs" />
+    <Compile Include="Z.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

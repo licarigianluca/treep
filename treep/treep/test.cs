@@ -13,7 +13,8 @@ class Test
         Console.WriteLine("Start parsing...");
         string text = System.IO.File.ReadAllText(@"C:\Users\gianlu\Source\Repos\treep\treep\treep\esempio.txt");
         //string text = "ciao \"ciao   .!= pippo\" true false = !=  + +=  @ # height empty type branchingfactor 123456789 123456.789456 18.1";
-        //string text = "<3, \"six\",9>";
+        //string text = "<true,false,\"ciao mondo!\",<2,1>>";
+        //string text = "x=true;";
         showToken(text);
         parseExpr(text);
     }
@@ -22,9 +23,8 @@ class Test
     {
 
         Parser p = new Parser();
-        //P program = (P)p.parse(text);
-        F factor= new F("pippo");
-        Console.WriteLine(factor.stringValue);
+        P program = p.parse<P>(text);
+        Console.WriteLine("Finish parsing");
     }
     private static void showToken(String text)
     {
@@ -60,8 +60,8 @@ class Test
             case 14: return "IF";
             case 15: return "ELSE";
             case 16: return "FOR";
-            case 17: return "GT";
-            case 18: return "LT";
+            case 17: return "OPEN_TUPLE";
+            case 18: return "CLOSE_TUPLE";
             case 19: return "EQUAL";
             case 20: return "DISEQUAL";
             case 21: return "RETURN";
@@ -79,6 +79,11 @@ class Test
             case 33: return "DOUBLE";
             case 34: return "NULL";
             case 35: return "STRING";
+            case 36: return "LT";
+            case 37: return "LE";
+            case 38: return "GT";
+            case 39: return "GE";
+            case 40: return "ASSIGN";
             default: return null;
         }
 

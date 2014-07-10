@@ -3,17 +3,19 @@ non so dove mettere gli operatori @ e #. vanno bene nella produzione E1?
 
 P -> S 'EOF'
 
-S -> COM S1 | epsilon			//lista comandi
+S -> C S1 | epsilon			//lista comandi
 
-S1 -> ';' S
+S1 -> ';' S | epsilon
 
 C ->  ID X |				//comandi
       'for' '(' C ';' G ';' C ')' B | 	
       'if' '(' G ')' B EIF |
       'return' E 
+	  'print'  E
 
 X -> '=' E Y | 			//
      '(' AR ')' B |
+	 
      '[' TREE_LIST ']'
 
 
@@ -21,7 +23,7 @@ X -> '=' E Y | 			//
                                  valore di ritorno di una funzione chiamata a var */
                                 // La seconda è per la definizione di una funzione e del suo corpo
 
-B -> '{' S '}' 			//blocchi interni
+B -> '{' S '}' 	|  C ';' 	//blocchi interni
 
 AR -> A | epsilon			//argomenti		****non è ridondante?*****
 
@@ -31,24 +33,23 @@ A1 -> ',' A | epsilon
 
 Y -> (AR) | epsilon
 
-EIF -> 'else' '{' S '}' | epsilon
+EIF -> 'else' B | epsilon
 
 
 G -> E G1				//guardia
 
-G1 ->   '<'  E |
-	'>'  E |
-	'='  E |
-	'>=' E |		no
-	'<=' E |		no
+G1 ->   'lt'  E |
+	'gt'  E |
+	'=='  E |
+	'ge' E |		no
+	'le' E |		no
 	'!=' E |
 
 E -> T E1
 
 E1 -> '+' T E1 | 
       '-' T E1 |
-      '@' T E1 |
-      '>' T E1 |	
+      	
       epsilon
 
 T -> F T1
@@ -57,16 +58,19 @@ T1 -> '*' F T1 |
       '/' F T1 |
       epsilon
 
-F -> '(' E ')' |
-        ID     |			ID Z
-        NUM    |			Z -> '[' N ']' | epsilon
-	DOUBLE |
-	BOOL   |
-	STRING |
-	TP     |
-	TR	
+F-> TYPE TAIL
 
-TR -> E '[' N ']'
+TYPE -> '(' E ')' HTAG  |
+        ID HTAG	   |			
+        INTEGER    |			
+		DOUBLE     |
+		BOOL       |
+		STRING     |
+		TP         
+		
+TAIL -> '[' N ']' HTAG | epsilon
+
+HTAG ->  '#' | epsilon 
 
 N -> E N1 | epsilon
 
@@ -76,4 +80,81 @@ TP -> '<' E TP1 '>'
 
 TP1 -> ',' TP | epsilon
 	
+
+Program -> StatementList EOF
+
+StatementList -> Statement StatementTail
+
+StatementTail -> ';' StatementList | epsilon
+
+Statement -> Assignment												|
+			 FunctionHead	FunctionTail							|
+			'for' '(' Assignment ';' Guard ';' Assignment ')' Block | 	
+			'if' '(' Guard ')' Block EIF							|
+			'return' Expr											|
+			'print'  Expr
+
+
+Block -> '{' StatementList '}' | Statement ';'
+
+Assignment -> LHandValue '=' Expr	|
+			  LHandValue '+=' Expr	|
+			  LHandValue '-=' Expr	|
+			  LHandValue '*=' Expr	|
+			  LHandValue '/=' Expr	|
+
+FunctionHead -> Id '(' Arguments ')' 
+
+FunctionTail -> Block | epsilon
+
+LHandValue ->	Id Htag	TupleAccess						|
+				'(' Id AccessTail ')' Htag	TupleAccess	
+
+AccessTail ->  '@' Integer AccessTail	|
+			   '@' Id AccessTail		|
+			   epsilon
+
+TupleAccess -> '>' Integer TupleAccess	|  epsilon
+
+Expr -> '(' Expr ')' Htag	|
+		Id Htag				|
+		Integer				|
+		Double				|
+		String				|
+		Bool				|
+		Tree				|
+		Tuple				|
+		FunctionHead		|
+		Mul Sum				
+
+Htag -> '#' | epsilon
+
+Mul -> Factor MulTail
+
+MulTail -> '*' Mul	|
+			'/' Mul	|
+			epsilon
+
+Sum -> Factor SumTail
+
+SumTail -> '+' Sum	|
+			'-' Sum	|
+			epsilon
+
+Factor ->	Integer				|
+			Double				|
+			Id					|
+			String				|
+			'(' Mul Sum ')'		|
+			FunctionHead		|
+			null
+
+
+Tree ->		Factor '[' TreeList ']'	|
+			Tuple  '[' TreeList ']'	
+
+TreeList -> TreeListHead | epsilon
+TreeListHead -> Tree TreeListTail
+
+TreeListTail -> ',' TreeListHead | epsilon
 

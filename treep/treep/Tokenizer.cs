@@ -9,8 +9,9 @@ public enum type
 {
     PLUS, TIMES, ID, INVALID_TOKEN, CLOSE_PAR, OPEN_PAR, EOF, INTEGER,
     OBELUS, MINUS, INCR, SEMICOLON, OPEN_CURLY, CLOSE_CURLY,
-    IF, ELSE, FOR, GT, LT, EQUAL, DISEQUAL, RETURN, COMMA, HASHTAG, AT,
-    OPEN_SQUARE, CLOSE_SQUARE, BOOL, HEIGHT, EMPTY, TYPE, BRANCH, PRINT, DOUBLE, NULL, STRING
+    IF, ELSE, FOR, OPEN_TUPLE, CLOSE_TUPLE, EQUAL, DISEQUAL, RETURN, COMMA, HASHTAG, AT,
+    OPEN_SQUARE, CLOSE_SQUARE, BOOL, HEIGHT, EMPTY, TYPE, BRANCH, PRINT, DOUBLE, NULL, STRING,
+    LT, LE, GT, GE, ASSIGN
 };
 
 public class Tokenizer
@@ -31,7 +32,11 @@ public class Tokenizer
         {"type",(int)type.TYPE},
         {"branchingfactor",(int)type.BRANCH},
         {"print",(int)type.PRINT},
-        {"null", (int)type.NULL}
+        {"null", (int)type.NULL},
+        {"lt",(int)type.LT},
+        {"le",(int)type.LE},
+        {"gt",(int)type.GT},
+        {"ge",(int)type.GE},
     };
     public Tokenizer(String expr)
     {
@@ -120,15 +125,26 @@ public class Tokenizer
         }
         else if (s[idx] == '<')
         {
-            t = new Token(s[idx++].ToString(), (int)type.LT);
+            t = new Token(s[idx++].ToString(), (int)type.OPEN_TUPLE);
         }
         else if (s[idx] == '>')
         {
-            t = new Token(s[idx++].ToString(), (int)type.GT);
+            t = new Token(s[idx++].ToString(), (int)type.CLOSE_TUPLE);
         }
         else if (s[idx] == '=')
         {
-            t = new Token(s[idx++].ToString(), (int)type.EQUAL);
+            if (s[idx + 1] == '=')
+            {
+                string str = s[idx].ToString() + s[idx + 1].ToString();
+                t = new Token(str, (int)type.EQUAL);
+                idx += 2;
+                ignoreBlanks = true;
+            }
+            else
+            {
+                //ignoreBlanks = false;
+                t = new Token(s[idx++].ToString(), (int)type.ASSIGN);
+            }
         }
         else if (s[idx] == '{')
         {
@@ -192,9 +208,6 @@ public class Tokenizer
             {
                 t = new Token(lexeme.ToString(), (int)type.INVALID_TOKEN);
             }
-
-
-
         }
         else if (isChar(s[idx]))
         {
