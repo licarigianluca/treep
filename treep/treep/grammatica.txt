@@ -1,40 +1,40 @@
-																	classe 		metodo parser
+																							classe 		metodo parser
 
-Program -> StatementList EOF														ok										
+Program -> StatementList EOF																	ok					ok					
 
-StatementList -> Statement StatementTail												ok		
+StatementList -> Statement StatementTail														ok					ok		
 
-StatementTail -> ';' StatementList | epsilon												ok
+StatementTail -> ';' StatementList | epsilon													ok					ok					
 
-Statement -> Assignment					             |									ok
+Statement -> Assignment					             |											ok					ok
              FunctionHead FunctionTail				     |
              'for' '(' Assignment ';' Guard ';' Assignment ')' Block | 	
-	     'if' '(' Guard ')' Block ElseIf			     |
-	     'return' Expr					     |
-	     'print'  Expr
+			 'if' '(' Guard ')' Block ElseIf			     |
+			 'return' Expr					     |
+			 'print'  Expr
 
-ElseIf -> 'else' Block | epsilon													ok
+ElseIf -> 'else' Block | epsilon																ok					ok			
 		
 
-Block -> '{' StatementList '}' | Statement ';'												ok	
+Block -> '{' StatementList '}' | Statement ';'													ok					ok	
 
-Assignment -> LHandValue '=' Expr	|												ok				
+Assignment -> LHandValue '=' Expr	|															ok					ok				
 			  LHandValue '+=' Expr	|
 			  LHandValue '-=' Expr	|
 			  LHandValue '*=' Expr	|
 			  LHandValue '/=' Expr	|
 
-FunctionHead -> Id '(' ArgumentList ')' 												ok				
+FunctionHead -> Id '(' ArgumentList ')' 														ok					ok		
 
-ArgumentList -> Id ArgumentTail
+ArgumentList -> Id ArgumentTail																	ok					ok
 
-ArgumentTail -> ',' ArgumentList | epsilon
+ArgumentTail -> ',' ArgumentList | epsilon														ok					ok		
 
-FunctionTail -> Block | epsilon														ok
+FunctionTail -> Block | epsilon																	ok					ok
 
-Guard -> Expr GuardTail															ok
+Guard -> Expr GuardTail																			ok					ok
 
-GuardTail -> 'lt' Expr |														ok
+GuardTail -> 'lt' Expr |																		ok
 	     'gt' Expr |
 	     '==' Expr |
 	     'ge' Expr |		
@@ -42,27 +42,27 @@ GuardTail -> 'lt' Expr |														ok
 	     '!=' Expr 
 	     
 
-LHandValue ->	Id Htag	TupleAccess		        |										ok
-		'(' Id AccessTail ')' Htag TupleAccess	
+LHandValue ->	Id Htag	TupleAccess					   |										ok					ok
+				'(' Id AccessTail ')' Htag TupleAccess	
 
-Htag -> '#' | epsilon															ok
+Htag -> '#' | epsilon																			ok					ok
 
-AccessTail ->  '@' Integer AccessTail	|												ok
-	       '@' Id AccessTail	|
-	       epsilon
+AccessTail ->  '@' Integer AccessTail	|														ok					ok
+		       '@' Id AccessTail	    |
+	           epsilon
 
-TupleAccess -> '>' Integer TupleAccess	|  epsilon											ok
+TupleAccess -> '>' Integer TupleAccess	|  epsilon												ok					ok
 
-Expr -> '(' Expr ')' Htag	|													ok
-	Id Htag			|
-	Integer			|
-	Double			|
-	String			|
-	Bool			|
-	Tree			|
-	Tupla			|
-	FunctionHead		|
-	Mul Sum				
+Expr -> '(' Expr ')' Htag	|																	ok
+			Id Htag			|
+			Integer			|
+			Double			|
+			String			|
+			Bool			|
+			Tree			|
+			Tupla			|
+			FunctionHead	|
+			Mul Sum				
 
 
 
