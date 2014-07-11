@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
-public class N1
+public class DataTail
 {
     public Atomic<char> comma { get; private set; }
-    public N n { get; private set; }
+    public DataList dl { get; private set; }
 
-    public N1(N n)
+    public DataTail(DataList dl)
     {
         this.comma = new Atomic<char>(',');
-        this.n = n;
+        this.dl = dl;
     }
 }
+
 

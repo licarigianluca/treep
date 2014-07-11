@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class P
+public class Program
 {
-    public S s{get; private set;}
+    public StatementList sl{get; private set;}
     public Atomic<string> eof { get; private set; }
 
-    public P(S s)
+    public Program(StatementList sl)
     {
-        this.s = s;
+        this.sl = sl;
         this.eof = new Atomic<string>("EOF");
     }
 }

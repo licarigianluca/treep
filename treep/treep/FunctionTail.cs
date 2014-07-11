@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 
-
-public class EIF
+public class FunctionTail
 {
-    public B b { get; private set; }
+    public Block b {get; private set;}
 
-    public EIF(B b)
+    public FunctionTail(Block b)
     {
         this.b = b;
     }

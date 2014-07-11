@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+public class Htag
+{
+    public Atomic<char> htag { get; private set; }
 
-   public class HTAG
+    public Htag()
     {
-       
-       public Atomic<char> htag { get; private set; }
-       
-       public HTAG()
-       {
-           this.htag = new Atomic<char>('#');
-       }
+        this.htag = new Atomic<char>('#');
     }
+}
 

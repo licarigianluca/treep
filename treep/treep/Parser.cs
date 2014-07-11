@@ -27,25 +27,25 @@ public class Parser
         return p;
 
     }
-    P P()
+    Program P()
     {
-        return new P(S());
+        return new Program(S());
     }
     //S -> C S1 | epsilon
-    S S()
+    StatementList S()
     {
         if (lookahead.Type == (int)type.ID | lookahead.Type == (int)type.FOR | lookahead.Type == (int)type.IF | lookahead.Type == (int)type.PRINT | lookahead.Type == (int)type.RETURN)
         {
-            return new S(C(), S1());
+            return new StatementList(C(), S1());
         }
         else return null;
     }
     //S1 -> ';' S
-    S1 S1()
+    StatementTail S1()
     {
 
         Match(type.SEMICOLON);
-        return new S1(S());
+        return new StatementTail(S());
 
     }
     //C ->  ID X                        |				
@@ -127,7 +127,7 @@ public class Parser
     //B -> '{' S '}' 		
     B B()
     {
-        S s;
+        StatementList s;
         if (lookahead.Type == (int)type.OPEN_CURLY)
         {
             Match(type.OPEN_CURLY);
@@ -411,14 +411,14 @@ public class Parser
         else return null;
     }
     //TP -> '<' E TP1 '>'
-    TP TP()
+    Tupla TP()
     {
         Z z;
 
         Match(type.OPEN_TUPLE);
         z = Z();
         Match(type.CLOSE_TUPLE);
-        return new TP(z);
+        return new Tupla(z);
 
 
     }

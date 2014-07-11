@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
-public class ELIST
+public class TreeListTail
 {
-    public Z z { get; private set; }
     public Atomic<char> comma { get; private set; }
+    public TreeListHead tlh { get; private set; }
 
-    public ELIST(Z z)
+    public TreeListTail(TreeListHead tlh)
     {
-        this.z = z;
         this.comma = new Atomic<char>(',');
+        this.tlh = tlh;
     }
 }
-

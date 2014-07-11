@@ -23,7 +23,7 @@ class Test
     {
 
         Parser p = new Parser();
-        P program = p.parse<P>(text);
+        Program program = p.parse<Program>(text);
         Console.WriteLine("Finish parsing");
     }
     private static void showToken(String text)

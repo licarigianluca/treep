@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class TP1
+
+public class ArgumentTail
 {
     public Atomic<char> comma { get; private set; }
-    public Z z { get; private set; }
+    public ArgumentList al { get; private set; }
 
-    public TP1(Z z)
+    public ArgumentTail(ArgumentList al)
     {
-        this.z = z;
         this.comma = new Atomic<char>(',');
+        this.al = al;
     }
-
 }
 
