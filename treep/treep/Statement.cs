@@ -21,7 +21,7 @@ public class Statement
 
     public Statement(Assignment assignment)
     {
-        this.assignment = assignment;
+        this.as1 = assignment;
     }
 
     public Statement(FunctionHead fh, FunctionTail ft)

@@ -6,13 +6,14 @@ using System.Text;
 
 public class Expr
 {
-    public string type{ get; private set; }
+    public string type { get; private set; }
     public Atomic<char> openPar { get; private set; }
     public Expr e { get; private set; }
     public Atomic<char> closePar { get; private set; }
     public Htag htag { get; private set; }
+    public TupleAccess ta { get; private set;}
     public string id { get; private set; }
-    public int intValue{ get; private set; }
+    public int intValue { get; private set; }
     public double doubleValue { get; private set; }
     public string stringValue { get; private set; }
     public bool boolValue { get; private set; }
@@ -22,18 +23,20 @@ public class Expr
     public Mul mul { get; private set; }
     public Sum sum { get; private set; }
 
-    public Expr(Expr e, Htag htag)
+    public Expr(Expr e, Htag htag, TupleAccess ta)
     {
         this.openPar = new Atomic<char>('(');
         this.e = e;
         this.closePar = new Atomic<char>(')');
         this.htag = htag;
+        this.ta = ta;
     }
 
-    public Expr(string id, Htag htag)
+    public Expr(string id, Htag htag, TupleAccess ta)
     {
         this.id = id;
         this.htag = htag;
+        this.ta = ta;
     }
 
     public Expr(int intValue)

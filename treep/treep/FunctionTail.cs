@@ -6,7 +6,7 @@ using System.Text;
 
 public class FunctionTail
 {
-    public Block b {get; private set;}
+    public Block b { get; private set; }
 
     public FunctionTail(Block b)
     {

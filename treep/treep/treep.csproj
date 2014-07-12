@@ -39,6 +39,7 @@
     <Compile Include="ArgumentList.cs" />
     <Compile Include="ArgumentTail.cs" />
     <Compile Include="Assignment.cs" />
+    <Compile Include="AssignmentTail.cs" />
     <Compile Include="Atomic.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="DataList.cs" />

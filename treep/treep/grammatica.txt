@@ -16,7 +16,7 @@ Statement -> Assignment					             |											ok					ok
 ElseIf -> 'else' Block | epsilon																ok					ok			
 		
 
-Block -> '{' StatementList '}' | Statement ';'													ok					ok	
+Block -> '{' StatementList '}' | Statement StatementTail												ok					ok	
 
 Assignment -> LHandValue '=' Expr	|															ok					ok				
 			  LHandValue '+=' Expr	|
@@ -52,40 +52,40 @@ AccessTail ->  '@' Integer AccessTail	|														ok					ok
 	           epsilon
 
 TupleAccess -> '>' Integer TupleAccess	|  epsilon												ok					ok
+			   '>' Id TupleAccess
 
-Expr -> '(' Expr ')' Htag	|																	ok
-			Id Htag			|
-			Integer			|
-			Double			|
-			String			|
-			Bool			|
-			Tree			|
-			Tupla			|
-			FunctionHead	|
-			Mul Sum				
+Expr -> '(' Expr ')' Htag TupleAccess |																	ok					ok
+		Id Htag	TupleAccess			  |
+		Id AccessTail TupleAccess
+		Integer						  |
+		Double						  |
+		String						  |
+		Bool						  |
+		Tree					      |
+		Tupla						  |
+		FunctionHead				  |
+		Mul Sum				
 
 
 
-Mul -> Factor MulTail															ok
+Mul -> Factor  '*' Factor MulTail		|
+		Factor  '/' Factor MulTail														ok
 
-MulTail -> '*' Mul	|														ok
-	   '/' Mul	|
-	   epsilon
+MulTail -> Mul | epsilon
 
-Sum -> Factor SumTail															ok
+Sum -> Factor  '+' Factor MulTail		|
+		Factor  '-' Factor MulTail																ok
 
-SumTail -> '+' Sum	|														ok	
-	   '-' Sum	|
-	   epsilon
+SumTail -> Sum | epsilon
 
 Factor -> Integer		|													ok
-	  Double		|
-	  Id			|
-	  String		|
-	  Bool			|	
-	  '(' Mul Sum ')'	|
-	  FunctionHead		|
-	  null
+		 Double			|
+		 Id				|
+		 String			|
+		 Bool			|	
+		'(' Mul Sum ')'	|
+		 FunctionHead	|
+		null
 
 
 Tree ->	Factor '[' TreeList ']'	|													ok
@@ -97,7 +97,7 @@ TreeListHead -> Tree TreeListTail
 
 TreeListTail -> ',' TreeListHead | epsilon												ok
 
-Tuple -> '<' DataList '>' 
+Tupla -> '<' DataList '>' 
 
 DataList -> Factor DataTail														ok
 

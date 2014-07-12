@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 
 
-public class GuardTail
+public class AssignmentTail
 {
     public Atomic<string> op { get; private set; }
     public Expr e { get; private set; }
-
-    public GuardTail(String op, Expr e)
+    public AssignmentTail(string op, Expr e)
     {
         this.op = new Atomic<string>(op);
         this.e = e;

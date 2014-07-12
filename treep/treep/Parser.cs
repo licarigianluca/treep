@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-
 public class Parser
 {
     private Tokenizer t;
@@ -20,10 +18,10 @@ public class Parser
     public T parse<T>(String s)
     {
         t = new Tokenizer(s);
-        lookahead = new Token[2] ;
+        lookahead = new Token[2];
         lookahead[0] = t.nextToken();
         lookahead[1] = t.nextToken();
-       
+
 
         T p = (T)(Object)Program();
         Match(type.EOF);
@@ -36,7 +34,7 @@ public class Parser
     {
         return new Program(StatementList());
     }
-    
+
     //StatementList -> Statement StatementTail
     StatementList StatementList()
     {
@@ -57,16 +55,15 @@ public class Parser
     //Statement -> Assignment					                            |
     //             FunctionHead FunctionTail				                |
     //            'for' '(' Assignment ';' Guard ';' Assignment ')' Block   | 	
-	//	          'if' '(' Guard ')' Block ElseIf			                |
-	//            'return' Expr					                            |
-	//            'print'  Expr
+    //	          'if' '(' Guard ')' Block ElseIf			                |
+    //            'return' Expr					                            |
+    //            'print'  Expr
     Statement Statement()
     {
         Assignment as1;
         Assignment as2;
         Guard g;
         Block b;
-        ElseIf ei;
 
         if (lookahead[0].Type == (int)type.ID)
         {
@@ -98,14 +95,12 @@ public class Parser
             Match(type.OPEN_PAR);
             g = Guard();
             Match(type.CLOSE_PAR);
-            b = Block();
-            ei = ElseIf();
-            return new Statement(g,b,ei);
+            return new Statement(g, Block(), ElseIf());
         }
         else if (lookahead[0].Type == (int)type.RETURN)
         {
             Match(type.RETURN);
-            return new Statement("return",Expr());
+            return new Statement("return", Expr());
         }
         else
         {
@@ -129,7 +124,7 @@ public class Parser
     Block Block()
     {
         StatementList sl;
-        Statement s;
+
         if (lookahead[0].Type == (int)type.OPEN_CURLY)
         {
             Match(type.OPEN_CURLY);
@@ -139,21 +134,38 @@ public class Parser
         }
         else
         {
-            s = Statement();
-            Match(type.SEMICOLON);
-            return new Block(s);
+            /*s = Statement();
+            Match(type.SEMICOLON);*/
+            return new Block(Statement(), StatementTail());
         }
     }
-    //Assignment -> LHandValue '=' Expr	    |
-	//              LHandValue '+=' Expr	|
-	//              LHandValue '-=' Expr	|
-	//              LHandValue '*=' Expr	|
-	//              LHandValue '/=' Expr	|
+    //Assignment -> LHandValue AssignmentTail
     
     Assignment Assignment()
     {
-        return new Assignment(LHandValue(), lookahead[1].Value, Expr());
+        return new Assignment(LHandValue(),AssignmentTail());
     }
+
+    //AssignmentTail -> '=' Expr    |
+    //                  '+=' Expr	|
+    //                  '-=' Expr   |
+    //                  '*=' Expr   |
+    //                  '/=' Expr
+    //DA AGGIUNGERE ALTRI OPERATORI!!!!!!!!
+    AssignmentTail AssignmentTail()
+    {
+        if (lookahead[0].Type == (int)type.INCR)
+        {
+            Match(type.INCR);
+            return new AssignmentTail(lookahead[0].Value, Expr());
+        }
+        else
+        {
+            Match(type.ASSIGN);
+            return new AssignmentTail(lookahead[0].Value, Expr());
+        }
+    }
+
     //FunctionHead -> Id '(' ArgumentList ')' 	
     FunctionHead FunctionHead()
     {
@@ -178,7 +190,8 @@ public class Parser
     //ArgumentTail -> ',' ArgumentList | epsilon
     ArgumentTail ArgumentTail()
     {
-        if (lookahead[0].Type == (int)type.COMMA){
+        if (lookahead[0].Type == (int)type.COMMA)
+        {
             Match(type.COMMA);
             return new ArgumentTail(ArgumentList());
         }
@@ -189,10 +202,10 @@ public class Parser
     FunctionTail FunctionTail()
     {
         if (lookahead[0].Type == (int)type.OPEN_CURLY |
-            lookahead[0].Type == (int)type.ID|
-            lookahead[0].Type == (int)type.FOR|
-            lookahead[0].Type == (int)type.IF|
-            lookahead[0].Type == (int)type.RETURN
+            lookahead[0].Type == (int)type.ID |
+            lookahead[0].Type == (int)type.FOR |
+            lookahead[0].Type == (int)type.IF |
+            lookahead[0].Type == (int)type.RETURN |
             lookahead[0].Type == (int)type.PRINT)
         {
             return new FunctionTail(Block());
@@ -207,11 +220,11 @@ public class Parser
     }
 
     //GuardTail -> 'lt' Expr |																		
-	//             'gt' Expr |
-	//             '==' Expr |
-	//             'ge' Expr |		
+    //             'gt' Expr |
+    //             '==' Expr |
+    //             'ge' Expr |		
     //	           'le' Expr |		
-	//             '!=' Expr 
+    //             '!=' Expr 
 
     GuardTail GuardTail()
     {
@@ -227,8 +240,8 @@ public class Parser
         }
         else if (lookahead[0].Type == (int)type.LE)
         {
-            Match(type.EQUAL);
-            return new GuardTail("==", Expr());
+            Match(type.LE);
+            return new GuardTail("le", Expr());
         }
         else if (lookahead[0].Type == (int)type.GE)
         {
@@ -237,8 +250,8 @@ public class Parser
         }
         else if (lookahead[0].Type == (int)type.EQUAL)
         {
-            Match(type.LE);
-            return new GuardTail("le", Expr());
+            Match(type.EQUAL);
+            return new GuardTail("==", Expr());
         }
         else
         {
@@ -283,8 +296,8 @@ public class Parser
     }
 
     //AccessTail ->  '@' Integer AccessTail	|																			
-	//	             '@' Id AccessTail	    |
-	//               epsilon
+    //	             '@' Id AccessTail	    |
+    //               epsilon
 
     AccessTail AccessTail()
     {
@@ -307,202 +320,302 @@ public class Parser
     }
 
     //TupleAccess -> '>' Integer TupleAccess	|  epsilon	
+    //               '>' Id  TupleAccess
     TupleAccess TupleAccess()
     {
         if (lookahead[0].Type == (int)type.CLOSE_TUPLE)
         {
-            Match(type.CLOSE_TUPLE);
-            int index = Convert.ToInt32(lookahead[0].Value);
-            Match(type.INTEGER);
-            return new TupleAccess(index, TupleAccess());
+            
+            if (lookahead[1].Type == (int)type.INTEGER)
+            {
+                Match(type.CLOSE_TUPLE);
+                int index = Convert.ToInt32(lookahead[0].Value);
+                Match(type.INTEGER);
+                return new TupleAccess(index, TupleAccess());
+            }
+            else
+            {
+                Match(type.CLOSE_TUPLE);
+                string id = lookahead[0].Value;
+                Match(type.ID);
+                return new TupleAccess(id, TupleAccess());
+            }
+
         }
         else return null;
     }
 
-    //Expr -> '(' Expr ')' Htag	|																	ok
-	//		Id Htag			|
-	//		Integer			|
-	//		Double			|
-	//		String			|
-	//		Bool			|
-	//		Tree			|
-	//		Tupla			|
-	//		FunctionHead	|
-	//		Mul Sum			
+    //Expr -> '(' Expr ')' Htag	|																	
+    //		Id Htag			|
+    //		Integer			|
+    //		Double			|
+    //		String			|
+    //		Bool			|
+    //		Tree			|
+    //		Tupla			|
+    //		FunctionHead---	|
+    //		Mul Sum			---
     Expr Expr()
     {
+        Expr e;
 
-    }
-    //T -> F T1
-    T T()
-    {
-        return new T(F(), T1());
-    }
-
-    //T1 -> '*' F T1 |
-    //      '/' F T1 |
-    //      epsilon
-    T1 T1()
-    {
-
-        if (lookahead.Type == (int)type.TIMES)
-        {
-            Match(type.TIMES);
-            return new T1(F(), T1(), '*');
-        }
-        else if (lookahead.Type == (int)type.OBELUS)
-        {
-            Match(type.OBELUS);
-            return new T1(F(), T1(), '/');
-        }
-        else return null;
-
-    }
-
-    //F-> TYPE TAIL
-
-    F F()
-    {
-        return new F(TYPE(), TAIL());
-    }
-    //TYPE -> '(' E ')'   HTAG |
-    //      ID        HTAG     |
-    //      INTEGER            |
-    //      DOUBLE             |
-    //	    BOOL               |
-    //	    STRING             |
-    //	    TUPLE       
-
-
-    TYPE TYPE()
-    {
-        E e;
-        HTAG htag;
-        if (lookahead.Type == (int)type.OPEN_PAR)
+        if (lookahead[0].Type == (int)type.OPEN_PAR)
         {
             Match(type.OPEN_PAR);
-            e = E();
+            e = Expr();
             Match(type.CLOSE_PAR);
-            htag = HTAG();
-            return new TYPE(e, htag);
+            return new Expr(e, Htag(), TupleAccess());
+
         }
-        else if (lookahead.Type == (int)type.ID)
+        else if (lookahead[0].Type == (int)type.ID || lookahead[0].Type == (int)type.INTEGER ||
+                lookahead[0].Type == (int)type.DOUBLE || lookahead[0].Type == (int)type.STRING ||
+            lookahead[0].Type == (int)type.BOOL)
         {
-            String idValue = lookahead.Value;
-            Match(type.ID);
-            htag = HTAG();
-            return new TYPE(idValue, htag);
+
+            if (lookahead[1].Type == (int)type.OPEN_PAR)
+            {
+                return new Expr(FunctionHead());
+            }
+            if (lookahead[1].Type == (int)type.TIMES || lookahead[1].Type == (int)type.OBELUS)
+            {
+                return new Expr(Mul(), Sum());
+            }
+            if (lookahead[1].Type == (int)type.OPEN_SQUARE)
+            {
+                return new Expr(Tree());
+            }
+            if (lookahead[1].Type == (int)type.OPEN_SQUARE)
+            {
+                String id = lookahead[0].Value;
+                Match(type.ID);
+                return new Expr(id, Htag(), TupleAccess());
+            }
+            if (lookahead[0].Type == (int)type.ID)
+            {
+                String id = lookahead[0].Value;
+                Match(type.ID);
+                return new Expr(id, Htag(), TupleAccess());
+            }
+            if (lookahead[0].Type == (int)type.INTEGER)
+            {
+                int intValue = Convert.ToInt32(lookahead[0].Value);
+                Match(type.INTEGER);
+                return new Expr(intValue);
+            }
+            if (lookahead[0].Type == (int)type.DOUBLE)
+            {
+                double doubleValue = Convert.ToDouble(lookahead[0].Value);
+                Match(type.DOUBLE);
+                return new Expr(doubleValue);
+            }
+            if (lookahead[0].Type == (int)type.STRING)
+            {
+                string stringValue = lookahead[0].Value;
+                Match(type.STRING);
+                return new Expr(stringValue);
+            }
+            if (lookahead[0].Type == (int)type.BOOL)
+            {
+                string boolValue = lookahead[0].Value;
+                Match(type.BOOL);
+                return new Expr(boolValue.Equals("true"));
+            }
         }
-        else if (lookahead.Type == (int)type.INTEGER)
+
+        return new Expr(Tupla());
+
+    }
+
+    //Mul -> Factor  '*' Factor MulTail		|
+    //       Factor  '/' Factor MulTail		
+    Mul Mul()
+    {
+
+        return new Mul(Factor(), lookahead[1].Value, Factor(), MulTail());
+
+    }
+
+    //MulTail -> Mul | epsilon
+    MulTail MulTail()
+    {
+        if (lookahead[0].Type == (int)type.ID || lookahead[0].Type == (int)type.INTEGER ||
+                lookahead[0].Type == (int)type.DOUBLE || lookahead[0].Type == (int)type.STRING ||
+            lookahead[0].Type == (int)type.BOOL)
         {
-            String value = lookahead.Value;
+            return new MulTail(Mul());
+        }
+        else return null;
+    }
+    //Sum -> Factor  '+' Factor SumTail		|
+    //       Factor  '-' Factor SumTail		
+    Sum Sum()
+    {
+        return new Sum(Factor(), lookahead[1].Value, Factor(), SumTail());
+
+    }
+
+    //SumTail -> Sum | epsilon
+    SumTail SumTail()
+    {
+        if (lookahead[0].Type == (int)type.ID || lookahead[0].Type == (int)type.INTEGER ||
+                lookahead[0].Type == (int)type.DOUBLE || lookahead[0].Type == (int)type.STRING ||
+            lookahead[0].Type == (int)type.BOOL)
+        {
+            return new SumTail(Sum());
+        }
+        else return null;
+    }
+
+    //Factor -> Integer 		|													
+    //          Double			|
+    //          Id				|
+    //          String			|
+    //          Bool			|	
+    //          '(' Mul Sum ')'	|
+    //          FunctionHead	|
+    //          null
+    Factor Factor()
+    {
+        Mul mul;
+        Sum sum;
+
+        if (lookahead[0].Type == (int)type.CLOSE_PAR)
+        {
+            Match(type.OPEN_PAR);
+            mul = Mul();
+            sum = Sum();
+            Match(type.CLOSE_PAR);
+            return new Factor(mul, sum);
+        }
+        else if (lookahead[0].Type == (int)type.ID)
+        {
+            if (lookahead[1].Type == (int)type.OPEN_PAR)
+            {
+                return new Factor(FunctionHead());
+            }
+            else
+            {
+                string id = lookahead[1].Value;
+                Match(type.ID);
+                return new Factor(id, "ID");
+            }
+        }
+        else if (lookahead[0].Type == (int)type.INTEGER)
+        {
+            int intValue = Convert.ToInt32(lookahead[0].Value);
             Match(type.INTEGER);
-            return new TYPE(Convert.ToInt32(value));
+            return new Factor(intValue);
         }
-        else if (lookahead.Type == (int)type.DOUBLE)
+        else if (lookahead[0].Type == (int)type.DOUBLE)
         {
-            String value = lookahead.Value;
+            double doubleValue = Convert.ToDouble(lookahead[0].Value);
             Match(type.DOUBLE);
-            return new TYPE(Convert.ToDouble(value));
+            return new Factor(doubleValue);
         }
-        else if (lookahead.Type == (int)type.STRING)
+        else if (lookahead[0].Type == (int)type.BOOL)
         {
-            String value = lookahead.Value;
-            Match(type.STRING);
-            return new TYPE(value);
-        }
-        else if (lookahead.Type == (int)type.BOOL)
-        {
-            String value = lookahead.Value;
+            string boolValue = lookahead[0].Value;
             Match(type.BOOL);
-            return new TYPE(value);
+            return new Factor(boolValue.Equals("true"));
         }
         else
-            return new TYPE(TP());
+        {
+            return new Factor(new Atomic<string>("null"));
+
+        }
     }
 
-    //TAIL -> '[' N ']' HTAG | epsilon
-    TAIL TAIL()
+    //Tree ->	Factor '[' TreeList ']'	|													
+    //          Tupla  '[' TreeList ']'	
+    Tree Tree()
     {
-        N n;
-        if (lookahead.Type == (int)type.OPEN_SQUARE)
+        Factor f;
+        Tupla t;
+        TreeList tl;
+
+        if (lookahead[0].Type == (int)type.ID || lookahead[0].Type == (int)type.INTEGER ||
+                lookahead[0].Type == (int)type.DOUBLE || lookahead[0].Type == (int)type.STRING ||
+            lookahead[0].Type == (int)type.BOOL)
         {
+            f = Factor();
             Match(type.OPEN_SQUARE);
-            n = N();
+            tl = TreeList();
             Match(type.CLOSE_SQUARE);
-            return new TAIL(n);
+            return new Tree(f, tl);
         }
-        else return null;
-    }
-    //HTAG ->  '#' | epsilon 
-    HTAG HTAG()
-    {
-        if (lookahead.Type == (int)type.HASHTAG)
+        else
         {
-            Match(type.HASHTAG);
-            return new HTAG();
+            t = Tupla();
+            Match(type.OPEN_SQUARE);
+            tl = TreeList();
+            Match(type.CLOSE_SQUARE);
+            return new Tree(t, tl);
         }
-        else return null;
     }
-    //N -> E N1 | epsilon
-    N N()
-    {
-        if (lookahead.Type == (int)type.OPEN_PAR | lookahead.Type == (int)type.ID |
-            lookahead.Type == (int)type.INTEGER | lookahead.Type == (int)type.DOUBLE |
-            lookahead.Type == (int)type.BOOL | lookahead.Type == (int)type.STRING |
-            lookahead.Type == (int)type.LT)
-        {
-            return new N(E(), N1());
 
+    //TreeList -> TreeListHead | epsilon
+    TreeList TreeList()
+    {
+        if (lookahead[0].Type == (int)type.ID || lookahead[0].Type == (int)type.INTEGER ||
+                lookahead[0].Type == (int)type.DOUBLE || lookahead[0].Type == (int)type.STRING ||
+                lookahead[0].Type == (int)type.BOOL || lookahead[0].Type == (int)type.OPEN_TUPLE)
+        {
+            return new TreeList(TreeListHead());
         }
         else return null;
     }
-    //N1 -> ',' N | epsilon
-    N1 N1()
+
+    //TreeListHead -> Tree TreeListTail
+    TreeListHead TreeListHead()
     {
-        if (lookahead.Type == (int)type.COMMA)
+        return new TreeListHead(Tree(), TreeListTail());
+    }
+
+    //TreeListTail -> ',' TreeListHead | epsilon	
+    TreeListTail TreeListTail()
+    {
+        if (lookahead[0].Type == (int)type.COMMA)
         {
             Match(type.COMMA);
-            return new N1(N());
+            return new TreeListTail(TreeListHead());
         }
         else return null;
     }
-    //TP -> '<' E TP1 '>'
-    Tupla TP()
+
+    //Tupla -> '<' DataList '>' 
+    Tupla Tupla()
     {
-        Z z;
+        DataList dl;
 
         Match(type.OPEN_TUPLE);
-        z = Z();
+        dl = DataList();
         Match(type.CLOSE_TUPLE);
-        return new Tupla(z);
-
-
+        return new Tupla(dl);
     }
 
-
-    //Z -> E E_LIST 
-
-    Z Z()
+    //DataList -> Factor DataTail	
+    DataList DataList()
     {
-        return new Z(E(), ELIST());
+        return new DataList(Factor(), DataTail());
     }
 
-    //E_LIST -> ',' Z | epsilon
-
-    ELIST ELIST()
+    //DataTail-> ',' DataList | epsilon
+    DataTail DataTail()
     {
-        if (lookahead.Type == (int)type.COMMA)
+        if (lookahead[0].Type == (int)type.COMMA)
         {
             Match(type.COMMA);
-            return new ELIST(Z());
+            return new DataTail(DataList());
         }
         else return null;
     }
     protected void Match(type t)
     {
-        Debug.Assert(lookahead.Type == (int)t, "Syntax error expected " + converter((int)t));
-        lookahead = this.t.nextToken();
+        Token tmp;
+        Debug.Assert(lookahead[0].Type == (int)t, "Syntax error expected " + converter((int)t));
+        tmp = lookahead[1];
+        lookahead[1] = this.t.nextToken();
+        lookahead[0] = tmp;
     }
     public String converter(int type)
     {

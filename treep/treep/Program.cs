@@ -5,7 +5,7 @@ using System.Text;
 
 public class Program
 {
-    public StatementList sl{get; private set;}
+    public StatementList sl { get; private set; }
     public Atomic<string> eof { get; private set; }
 
     public Program(StatementList sl)

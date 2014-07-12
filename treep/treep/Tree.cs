@@ -10,7 +10,7 @@ public class Tree
     public TreeList tl { get; private set; }
     public Atomic<char> openSquare { get; private set; }
     public Atomic<char> closeSquare { get; private set; }
-    public tupla t { get; private set; }
+    public Tupla t { get; private set; }
 
     public Tree(Factor f, TreeList tl)
     {

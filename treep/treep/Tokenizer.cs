@@ -227,7 +227,6 @@ public class Tokenizer
         }
         else
         {
-            //if ((s[idx] == ' ' || s[idx] == '\n') && ignoreBlanks)
             if (isBlank(s[idx]) && ignoreBlanks)
             {
                 idx++;
@@ -242,7 +241,20 @@ public class Tokenizer
         return t;
     }
 
+    public List<Token> getTokenList()
+    {
+        List<Token> tokenList = new List<Token>();
+        Token curr;
 
+        do
+        {
+            curr = this.nextToken();
+            tokenList.Add(curr);
+        }
+        while (curr.Type != (int)type.EOF && curr.Type != (int)type.INVALID_TOKEN);
+
+        return tokenList;
+    }
     private bool isDigit(char c)
     {
         return (c >= '0' && c <= '9');

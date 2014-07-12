@@ -1,12 +1,12 @@
 ﻿
 depthFirstSearch ( tree ) { 
-  if (tree == pippo) return pippo; 
+  if (tree == pippo) return pippo;
 
   print ( tree# > 0) ; 
 
   tree# > 1=1; 
 
-  for (child = 0; tree > child != null; child += 1) {
+  for (child = 0; tree > child != pippo; child += 1) {
 
     if ((tree@child )# > 1==0) { depthFirstSearch ( tree@child ) ; } 
   };

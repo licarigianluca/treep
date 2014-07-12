@@ -5,7 +5,7 @@ public class Atomic<T>
 {
     public T value { get; private set; }
 
-    public Atomic(T value) 
+    public Atomic(T value)
     {
         this.value = value;
     }

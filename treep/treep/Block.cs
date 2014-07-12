@@ -10,8 +10,8 @@ public class Block
     public StatementList sl { get; private set; }
     public Atomic<char> closeCurly { get; private set; }
     public Statement s { get; private set; }
-    public Atomic<char> semicolon { get; private set; }
-
+    public StatementTail st { get; private set; }
+    
     public Block(StatementList sl)
     {
         this.openCurly = new Atomic<char>('{');
@@ -19,10 +19,10 @@ public class Block
         this.closeCurly = new Atomic<char>('}');
     }
 
-    public Block(Statement s)
+    public Block(Statement s, StatementTail st)
     {
         this.s = s;
-        this.semicolon = new Atomic<char>(';');
+        this.st = st;
     }
 }
 

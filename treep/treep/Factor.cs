@@ -5,7 +5,7 @@ using System.Text;
 
 public class Factor
 {
-    public string type{ get; private set; }
+    public string type { get; private set; }
     public int intValue { get; private set; }
     public double doubleValue { get; private set; }
     public bool boolValue { get; private set; }
@@ -16,7 +16,7 @@ public class Factor
     public Sum sum { get; private set; }
     public Mul mul { get; private set; }
     public FunctionHead fh { get; private set; }
-    public Atomic<char> nullValue { get; private set; }
+    public Atomic<string> nullValue { get; private set; }
 
     public Factor(int intValue)
     {
@@ -65,6 +65,6 @@ public class Factor
 
     public Factor(Atomic<string> nullValue)
     {
-        this.nullValue=nullValue;
+        this.nullValue = nullValue;
     }
 }

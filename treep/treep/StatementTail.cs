@@ -14,7 +14,7 @@ public class StatementTail
     {
         this.semicolon = new Atomic<char>(';');
         this.sl = sl;
-        
+
     }
 }
 
